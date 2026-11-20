@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intentional Block — Settings &amp; History</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="layout">
+    <header class="header">
+      <div class="brand">
+        <img src="../icons/icon48.png" alt="" class="brand-icon" />
+        <div>
+          <h1>Intentional Block</h1>
+          <p class="subtitle">Always-on site blocker with an AI intention gatekeeper</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="settings" role="tab" aria-selected="true" type="button">AI &amp; OpenRouter</button>
+        <button class="tab" data-tab="sites" role="tab" aria-selected="false" type="button">Blocked Sites</button>
+        <button class="tab" data-tab="history" role="tab" aria-selected="false" type="button">History</button>
+      </nav>
+    </header>
+
+    <main class="content">
+      <!-- TAB 1: AI & OPENROUTER -->
+      <section id="tab-settings" class="tab-panel active">
+        <form id="settingsForm" class="card form-card">
+          <div class="card-head">
+            <h2>OpenRouter Connection</h2>
+            <p>Your API key is stored locally in Chrome and sent directly to OpenRouter.</p>
+          </div>
+
+          <div class="field">
+            <label for="apiKeyInput">OpenRouter API Key</label>
+            <div class="input-row">
+              <input
+                id="apiKeyInput"
+                type="password"
+                placeholder="sk-or-v1-..."
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <button id="toggleKeyBtn" class="secondary-btn" type="button">Show</button>
+            </div>
+            <p class="help-text">
+              Get a key at <a href="https://openrouter.ai/keys" target="_blank" rel="noreferrer">openrouter.ai/keys</a>.
+            </p>
+          </div>
+
+          <div class="field">
+            <label for="modelInput">OpenRouter Model ID</label>
+            <input
+              id="modelInput"
+              type="text"
+              placeholder="provider/model-name"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <p class="help-text">
+              Enter any model ID from <a href="https://openrouter.ai/models" target="_blank" rel="noreferrer">openrouter.ai/models</a>.
+            </p>
+          </div>
+
+          <div class="field toggle-field">
+            <div class="toggle-row">
+              <div class="toggle-copy">
+                <label for="disableThinkingInput">Disable thinking</label>
+                <p class="help-text">
+                  Turns off reasoning tokens for faster replies. Models that require thinking (like Gemini 4 Neon) automatically use <code>low</code> effort.
+                </p>
+              </div>
+              <label class="toggle-switch">
+                <input id="disableThinkingInput" type="checkbox" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="test-row">
+            <button id="testConnectionBtn" class="secondary-btn" type="button">Test OpenRouter Connection</button>
+            <span id="testStatus" class="status-text"></span>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="card-head">
+            <h2>Gatekeeper Behavior</h2>
+            <p>Tune how the AI evaluates your intentions and sizes unlock durations.</p>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label>Strictness</label>
+              <div class="segmented" id="strictnessGroup">
+                <button type="button" class="seg-btn" data-value="gentle">Gentle</button>
+                <button type="button" class="seg-btn active" data-value="balanced">Balanced</button>
+                <button type="button" class="seg-btn" data-value="strict">Strict</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="maxMinutesInput">Max Single Unlock (minutes)</label>
+              <input id="maxMinutesInput" type="number" min="5" max="180" step="5" value="45" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="customInstructionsInput">Personal Guidelines (Optional)</label>
+            <textarea
+              id="customInstructionsInput"
+              rows="3"
+              placeholder="Examples: 'I'm launching my app this week so posting X updates is high priority.' or 'After 10 PM, deny casual scrolling.'"
+            ></textarea>
+          </div>
+
+          <div class="field checkbox-field">
+            <label class="checkbox-label">
+              <input id="showTimerPillInput" type="checkbox" checked />
+              <span>Show subtle floating countdown timer while browsing an unlocked site</span>
+            </label>
+          </div>
+
+          <div class="form-footer">
+            <span id="saveStatus" class="status-text"></span>
+            <button id="saveSettingsBtn" class="primary-btn" type="submit">Save Settings</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- TAB 2: BLOCKED SITES -->
+      <section id="tab-sites" class="tab-panel" hidden>
+        <div class="card">
+          <div class="card-head">
+            <h2>Add Blocked Site</h2>
+            <p>Everything on this list stays blocked 24/7 until the AI approves an unlock.</p>
+          </div>
+
+          <form id="addSiteForm" class="add-site-form">
+            <input
+              id="newSiteDomains"
+              type="text"
+              placeholder="Domain(s), e.g. reddit.com or x.com, twitter.com"
+              required
+            />
+            <input
+              id="newSiteName"
+              type="text"
+              placeholder="Label (optional)"
+            />
+            <button class="primary-btn" type="submit">Add Site</button>
+          </form>
+          <p id="siteError" class="error-text" hidden></p>
+
+          <div class="presets-section">
+            <span class="presets-label">Quick add:</span>
+            <div id="presetChips" class="preset-chips"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head-row">
+            <div>
+              <h2>Blocked List</h2>
+              <p id="sitesCountSubtitle">0 sites blocked</p>
+            </div>
+          </div>
+          <ul id="sitesList" class="sites-list"></ul>
+        </div>
+      </section>
+
+      <!-- TAB 3: HISTORY -->
+      <section id="tab-history" class="tab-panel" hidden>
+        <div class="stats-grid" id="historyStatsGrid"></div>
+
+        <div class="card">
+          <div class="card-head-row">
+            <div>
+              <h2>Intention Log</h2>
+              <p>The AI gatekeeper sees your recent history to spot patterns and adjust unlock lengths.</p>
+            </div>
+            <div class="history-actions">
+              <button id="exportHistoryBtn" class="secondary-btn" type="button">Export JSON</button>
+              <button id="clearHistoryBtn" class="danger-btn" type="button">Clear History</button>
+            </div>
+          </div>
+
+          <div class="history-filters">
+            <input id="historySearch" type="search" placeholder="Search intentions or sites..." />
+            <select id="historyDecisionFilter">
+              <option value="all">All decisions</option>
+              <option value="approve">Approved only</option>
+              <option value="deny">Denied only</option>
+            </select>
+          </div>
+
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

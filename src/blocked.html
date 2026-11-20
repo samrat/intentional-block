@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intentional Block — Set Your Intention</title>
+  <link rel="stylesheet" href="blocked.css" />
+</head>
+<body>
+  <div class="page" id="page">
+    <div class="ambient-glow" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <img src="../icons/icon32.png" alt="" class="brand-icon" />
+        <span class="brand-name">Intentional Block</span>
+      </div>
+      <div class="topbar-actions">
+        <span id="todayStatsPill" class="stats-pill" hidden></span>
+        <button id="openSettingsBtn" class="ghost-btn" type="button">Settings</button>
+      </div>
+    </header>
+
+    <main class="stage-shell">
+      <section class="site-context">
+        <div class="site-badge-row">
+          <span class="status-dot" id="statusDot"></span>
+          <span class="site-label" id="siteName">Blocked Site</span>
+          <span class="reason-badge" id="reasonBadge" hidden></span>
+        </div>
+        <p class="target-url" id="targetUrlDisplay"></p>
+      </section>
+
+      <!-- Shown when OpenRouter API key is missing -->
+      <section id="setupCard" class="card setup-card" hidden>
+        <h2>Connect OpenRouter to get started</h2>
+        <p>
+          Intentional Block uses an AI gatekeeper via OpenRouter to weigh your intention and decide how long to unlock this site.
+        </p>
+        <div class="card-actions">
+          <button id="setupOpenSettingsBtn" class="primary-btn" type="button">Add OpenRouter API Key</button>
+          <button id="setupCloseTabBtn" class="secondary-btn" type="button">Close tab</button>
+        </div>
+      </section>
+
+      <!-- Main single-prompt, single-reply Intention Stage -->
+      <section id="intentionStage" class="intention-stage">
+        <p id="promptLead" class="prompt-lead">Pause for a moment. What is your intention right now?</p>
+
+        <!-- Phase 1: Composing the single intention -->
+        <form id="intentionForm" class="intention-form">
+          <div id="intentionCanvas" class="intention-canvas">
+            <div id="intentionEditor" class="intention-editor size-lg">
+              <div id="intentionPlaceholder" class="intention-placeholder" aria-hidden="true">Write why you're opening this…</div>
+              <div id="intentionMirror" class="intention-mirror" aria-hidden="true"></div>
+              <textarea
+                id="intentionInput"
+                class="intention-textarea"
+                rows="1"
+                autocomplete="off"
+                autocorrect="on"
+                spellcheck="false"
+                aria-labelledby="promptLead"
+                aria-describedby="composerHint"
+              ></textarea>
+            </div>
+            <div class="intention-rule" aria-hidden="true">
+              <div id="intentionRuleFill" class="intention-rule-fill"></div>
+            </div>
+          </div>
+
+          <div class="intention-actions">
+            <span class="composer-hint" id="composerHint">One prompt, one decision &middot; Press Enter when ready</span>
+            <div class="action-buttons">
+              <button id="closeTabBtn" class="ghost-btn" type="button">Close tab</button>
+              <button id="submitBtn" class="primary-btn" type="submit" disabled>Set intention</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Phase 2 & 3: Committed intention -->
+        <div id="submittedBlock" class="submitted-block" hidden>
+          <div id="submittedEyebrow" class="submitted-eyebrow">Your intention</div>
+          <blockquote id="submittedText" class="submitted-text"></blockquote>
+        </div>
+
+        <!-- Phase 2: Weighing the intention -->
+        <div id="thinkingState" class="thinking-state" hidden aria-live="polite">
+          <div class="thinking-row">
+            <span class="thinking-orb" aria-hidden="true"></span>
+            <span class="thinking-label">Weighing your intention&hellip;</span>
+          </div>
+          <div class="thinking-bar" aria-hidden="true">
+            <div class="thinking-bar-sweep"></div>
+          </div>
+        </div>
+
+        <!-- Phase 3: Single final reply -->
+        <section id="replyPanel" class="reply-panel" hidden aria-live="polite">
+          <div class="reply-header">
+            <div class="reply-verdict">
+              <span class="verdict-dot" id="verdictDot"></span>
+              <span class="verdict-label" id="verdictLabel"></span>
+            </div>
+            <div id="countdownBox" class="countdown-box" hidden>
+              <span class="countdown-label">Remaining</span>
+              <span id="countdownValue" class="countdown-value">--:--</span>
+            </div>
+          </div>
+
+          <p id="replyMessage" class="reply-message"></p>
+
+          <div class="reply-actions">
+            <button id="continueBtn" class="primary-btn" type="button" hidden>Continue &rarr;</button>
+            <button id="lockEarlyBtn" class="secondary-btn" type="button" hidden>Lock again</button>
+            <button id="replyCloseTabBtn" class="primary-btn" type="button" hidden>Close tab</button>
+            <button id="retryBtn" class="secondary-btn" type="button" hidden>Edit &amp; try again</button>
+          </div>
+        </section>
+      </section>
+
+      <!-- Subtle collapsible recent history for self-awareness -->
+      <details id="recentDetails" class="recent-details" hidden>
+        <summary>Recent intentions on this site</summary>
+        <ul id="recentList" class="recent-list"></ul>
+      </details>
+    </main>
+  </div>
+
+  <script type="module" src="blocked.js"></script>
+</body>
+</html>
